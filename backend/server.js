@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 5001;
 
 const corsOptions = {
   origin: ['https://ecommclothingshop.netlify.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
