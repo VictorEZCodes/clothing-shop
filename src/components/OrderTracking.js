@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
+import { API_URL } from '../config';
 
 const OrderTracking = () => {
   const [order, setOrder] = useState(null);
@@ -13,7 +14,7 @@ const OrderTracking = () => {
     const fetchOrder = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5001/api/orders/${orderId}`, {
+        const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

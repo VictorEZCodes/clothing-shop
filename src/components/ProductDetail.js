@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
+import { API_URL } from '../config';
 
 const ProductDetail = () => {
   const [product, setProduct] = useState(null);
@@ -19,7 +20,7 @@ const ProductDetail = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/products/${id}`);
+      const response = await fetch(`${API_URL}/api/products/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product');
       }

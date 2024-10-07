@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MainPage from './MainPage';
 import { Eye, EyeOff } from 'lucide-react';
+import { API_URL } from '../config';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5001/api/register', {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

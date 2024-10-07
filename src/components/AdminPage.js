@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MainPage from './MainPage';
+import { API_URL } from '../config';
 
 const AdminPage = () => {
   const [name, setName] = useState('');
@@ -27,7 +28,7 @@ const AdminPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/categories');
+      const response = await fetch(`${API_URL}/api/categories`);
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
@@ -67,7 +68,7 @@ const AdminPage = () => {
       for (let imageFile of imageFiles) {
         const formData = new FormData();
         formData.append('image', imageFile);
-        const uploadResponse = await fetch('http://localhost:5001/api/upload', {
+        const uploadResponse = await fetch(`${API_URL}/api/upload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -94,7 +95,7 @@ const AdminPage = () => {
       };
       // console.log('Sending product data:', productData);
 
-      const response = await fetch('http://localhost:5001/api/products', {
+      const response = await fetch(`${API_URL}/api/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,13 +133,11 @@ const AdminPage = () => {
   const handleAddCategory = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      // console.log('Sending token:', token);
-      const response = await fetch('http://localhost:5001/api/categories', {
+      const response = await fetch(`${API_URL}/api/categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ name: newCategoryName })
       });
@@ -166,7 +165,7 @@ const AdminPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/orders', {
+      const response = await fetch(`${API_URL}/api/orders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -182,7 +181,7 @@ const AdminPage = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/orders/${orderId}`, {
+      const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

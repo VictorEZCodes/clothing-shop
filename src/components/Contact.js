@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -14,7 +15,7 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/contact', {
+      const response = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

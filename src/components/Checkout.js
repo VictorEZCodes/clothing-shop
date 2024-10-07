@@ -3,6 +3,7 @@ import { useCart } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
+import { API_URL } from '../config';
 
 const Checkout = () => {
   const { state, dispatch } = useCart();
@@ -36,8 +37,7 @@ const Checkout = () => {
   const fetchUserEmail = async () => {
     try {
       const token = localStorage.getItem('token');
-      // console.log('Token:', token);
-      const response = await fetch('http://localhost:5001/api/user/email', {
+      const response = await fetch(`${API_URL}/api/user/email`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -88,7 +88,7 @@ const Checkout = () => {
   const createOrder = async (reference) => {
     try {
       // console.log("Creating order with reference:", reference);
-      const response = await fetch('http://localhost:5001/api/orders', {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

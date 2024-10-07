@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MainPage from './MainPage';
+import { API_URL } from '../config';
 
 const CreateAdmin = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const CreateAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/api/create-admin', {
+      const response = await fetch(`${API_URL}/api/create-admin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

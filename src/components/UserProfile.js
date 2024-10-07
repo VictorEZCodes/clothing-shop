@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
 import { Eye, EyeOff } from 'lucide-react';
+import { API_URL } from '../config';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -23,7 +24,7 @@ const UserProfile = () => {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/user/profile', {
+      const response = await fetch(`${API_URL}/api/user/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -43,7 +44,7 @@ const UserProfile = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/user/orders', {
+      const response = await fetch(`${API_URL}/api/user/orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
