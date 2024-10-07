@@ -11,18 +11,13 @@ require('dotenv').config({ path: '../.env' });
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-const allowedOrigins = ['http://localhost:3000', 'https://ecommclothingshop.netlify.app'];
+const corsOptions = {
+  origin: ['https://ecommclothingshop.netlify.app', 'http://localhost:3000'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
