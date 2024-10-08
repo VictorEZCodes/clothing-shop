@@ -120,7 +120,9 @@ const ProductListing = () => {
                 >
                   <div className="w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-md overflow-hidden group-hover:opacity-75">
                     <img
-                      src={Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''}
+                      src={Array.isArray(product.images) && product.images.length > 0
+                        ? `${API_URL}${product.images[0]}`
+                        : ''}
                       alt={product.name}
                       className="w-full h-full object-center object-cover"
                     />
