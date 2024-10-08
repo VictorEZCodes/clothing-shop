@@ -176,17 +176,15 @@ app.get('/api/products', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
 
-    // console.log('Query:', query);
     const products = await Product.find(query).populate('category');
     const productsWithFullImageUrls = products.map(product => {
       const fullImageUrls = product.images.map(image => {
-        if (image.startsWith('http://localhost:5001')) {
+        if (image.startsWith('http')) {
           return image;
         } else {
-          return `http://localhost:5001${image}`;
+          return `${req.protocol}://${req.get('host')}${image}`;
         }
       });
-      // console.log('Product images:', fullImageUrls);
       return {
         ...product.toObject(),
         images: fullImageUrls
@@ -201,9 +199,21 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('category');
     if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
+
+    const productWithFullImageUrls = {
+      ...product.toObject(),
+      images: product.images.map(image => {
+        if (image.startsWith('http')) {
+          return image;
+        } else {
+          return `${req.protocol}://${req.get('host')}${image}`;
+        }
+      })
+    };
+
+    res.json(productWithFullImageUrls);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching product' });
   }

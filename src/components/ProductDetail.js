@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
+import { API_URL } from '../config';
 
 const ProductDetail = () => {
   const [product, setProduct] = useState(null);
@@ -19,12 +20,13 @@ const ProductDetail = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/products/${id}`);
+      const response = await fetch(`${API_URL}/api/products/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product');
       }
       const data = await response.json();
       setProduct(data);
+      setSelectedImage(data.images[0]); // Set the first image as the selected image
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -64,19 +66,19 @@ const ProductDetail = () => {
             <div className="flex flex-col">
               <div className="w-full aspect-w-1 aspect-h-1 mb-4">
                 <img
-                  src={Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''}
+                  src={selectedImage || ''}
                   alt={product.name}
                   className="w-full h-full object-center object-cover sm:rounded-lg cursor-pointer"
-                  onClick={() => setSelectedImage(Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '')}
+                  onClick={() => setSelectedImage(selectedImage)}
                 />
               </div>
-              {Array.isArray(product.images) && product.images.length > 1 && (
+              {product.images && product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
-                  {product.images.slice(1).map((image, index) => (
+                  {product.images.map((image, index) => (
                     <img
                       key={index}
                       src={image}
-                      alt={`${product.name} ${index + 2}`}
+                      alt={`${product.name} ${index + 1}`}
                       className="w-full h-24 object-cover rounded-md cursor-pointer"
                       onClick={() => setSelectedImage(image)}
                     />
