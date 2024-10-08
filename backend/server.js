@@ -231,7 +231,7 @@ app.post('/api/products', verifyToken, async (req, res) => {
 
     // Ensure full URLs for images
     const fullUrlImages = images.map(image =>
-      image.startsWith('http') ? image : `${process.env.BASE_URL}${image}`
+      image.startsWith('http') ? image : `${process.env.BASE_URL}/uploads/${image}`
     );
 
     const product = new Product({
