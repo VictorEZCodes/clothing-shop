@@ -209,43 +209,17 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-app.post('/api/products', verifyToken, async (req, res) => {
+app.post('/api/products', verifyToken, upload.array('images', 5), async (req, res) => {
   try {
-    const { name, description, price, images, category } = req.body;
-
-    // Validate required fields
-    if (!name || !description || !price || !images || images.length === 0 || !category) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    // Validate price is a number
-    if (isNaN(price)) {
-      return res.status(400).json({ error: 'Price must be a number' });
-    }
-
-    // Validate category exists
-    const categoryExists = await Category.findById(category);
-    if (!categoryExists) {
-      return res.status(400).json({ error: 'Invalid category' });
-    }
-
-    // Ensure full URLs for images without duplicate '/uploads/'
-    const fullUrlImages = images.map(image => {
-      if (image.startsWith('http')) {
-        return image;
-      } else {
-        // Remove any leading '/' from the image path
-        const cleanImagePath = image.replace(/^\/+/, '');
-        return `${process.env.BASE_URL}/uploads/${cleanImagePath}`;
-      }
-    });
+    const { name, description, price, category } = req.body;
+    const images = req.files.map(file => `${process.env.BASE_URL}/uploads/${file.filename}`);
 
     const product = new Product({
       name,
       description,
       price,
       category,
-      images: fullUrlImages
+      images
     });
 
     await product.save();
