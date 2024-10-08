@@ -26,7 +26,7 @@ const ProductDetail = () => {
       }
       const data = await response.json();
       setProduct(data);
-      setSelectedImage(data.images[0]); // Set the first image as the selected image
+      setSelectedImage(data.images && data.images.length > 0 ? data.images[0] : null);
       setLoading(false);
     } catch (error) {
       setError(error.message);
