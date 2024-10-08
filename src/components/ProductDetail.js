@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { dispatch } = useCart();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [mainImage, setMainImage] = useState('');
 
   useEffect(() => {
     fetchProduct();
@@ -26,7 +27,9 @@ const ProductDetail = () => {
       }
       const data = await response.json();
       setProduct(data);
-      setSelectedImage(data.images && data.images.length > 0 ? data.images[0] : null);
+      if (data.images && data.images.length > 0) {
+        setMainImage(data.images[0]);
+      }
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -65,14 +68,16 @@ const ProductDetail = () => {
             {/* Image gallery */}
             <div className="flex flex-col">
               <div className="w-full aspect-w-1 aspect-h-1 mb-4">
-                <img
-                  src={selectedImage || ''}
-                  alt={product.name}
-                  className="w-full h-full object-center object-cover sm:rounded-lg cursor-pointer"
-                  onClick={() => setSelectedImage(selectedImage)}
-                />
+                {mainImage && (
+                  <img
+                    src={mainImage}
+                    alt={product.name}
+                    className="w-full h-full object-center object-cover sm:rounded-lg cursor-pointer"
+                    onClick={() => setSelectedImage(mainImage)}
+                  />
+                )}
               </div>
-              {product.images && product.images.length > 1 && (
+              {product && product.images && product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
                   {product.images.map((image, index) => (
                     <img
@@ -80,7 +85,7 @@ const ProductDetail = () => {
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-24 object-cover rounded-md cursor-pointer"
-                      onClick={() => setSelectedImage(image)}
+                      onClick={() => setMainImage(image)}
                     />
                   ))}
                 </div>
