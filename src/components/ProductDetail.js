@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import MainPage from './MainPage';
 import { toast } from 'react-toastify';
-import { API_URL } from '../config';
 
 const ProductDetail = () => {
   const [product, setProduct] = useState(null);
@@ -20,7 +19,7 @@ const ProductDetail = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/products/${id}`);
+      const response = await fetch(`http://localhost:5001/api/products/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product');
       }
@@ -68,7 +67,7 @@ const ProductDetail = () => {
                   src={Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''}
                   alt={product.name}
                   className="w-full h-full object-center object-cover sm:rounded-lg cursor-pointer"
-                  onClick={() => setSelectedImage(product.images[0])}
+                  onClick={() => setSelectedImage(Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '')}
                 />
               </div>
               {Array.isArray(product.images) && product.images.length > 1 && (

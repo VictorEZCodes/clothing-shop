@@ -209,19 +209,28 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-app.post('/api/products', verifyToken, upload.array('images', 5), async (req, res) => {
+app.post('/api/products', verifyToken, async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
-    const images = req.files.map(file => `${process.env.BASE_URL}/uploads/${file.filename}`);
+    // console.log('Received product data:', req.body);
+    const { name, description, price, images, category } = req.body;
 
-    const product = new Product({
-      name,
-      description,
-      price,
-      category,
-      images
-    });
+    // Validate required fields
+    if (!name || !description || !price || !images || images.length === 0 || !category) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
 
+    // Validate price is a number
+    if (isNaN(price)) {
+      return res.status(400).json({ error: 'Price must be a number' });
+    }
+
+    // Validate category exists
+    const categoryExists = await Category.findById(category);
+    if (!categoryExists) {
+      return res.status(400).json({ error: 'Invalid category' });
+    }
+
+    const product = new Product(req.body);
     await product.save();
     res.status(201).json(product);
   } catch (error) {

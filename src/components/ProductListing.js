@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import MainPage from './MainPage';
-import { API_URL } from '../config';
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
@@ -25,7 +24,7 @@ const ProductListing = () => {
 
   const fetchProducts = async () => {
     try {
-      let url = `${API_URL}/api/products`;
+      let url = 'http://localhost:5001/api/products';
       if (selectedCategory) {
         url += `?category=${selectedCategory}`;
       }
@@ -52,7 +51,7 @@ const ProductListing = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/categories`);
+      const response = await fetch('http://localhost:5001/api/categories');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
