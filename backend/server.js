@@ -211,7 +211,6 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/products', verifyToken, async (req, res) => {
   try {
-    // console.log('Received product data:', req.body);
     const { name, description, price, images, category } = req.body;
 
     // Validate required fields
@@ -230,7 +229,16 @@ app.post('/api/products', verifyToken, async (req, res) => {
       return res.status(400).json({ error: 'Invalid category' });
     }
 
-    const product = new Product(req.body);
+    // Ensure full URLs for images
+    const fullUrlImages = images.map(image =>
+      image.startsWith('http') ? image : `${process.env.BASE_URL}${image}`
+    );
+
+    const product = new Product({
+      ...req.body,
+      images: fullUrlImages
+    });
+
     await product.save();
     res.status(201).json(product);
   } catch (error) {
