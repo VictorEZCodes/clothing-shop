@@ -18,7 +18,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -229,10 +229,16 @@ app.post('/api/products', verifyToken, async (req, res) => {
       return res.status(400).json({ error: 'Invalid category' });
     }
 
-    // Ensure full URLs for images
-    const fullUrlImages = images.map(image =>
-      image.startsWith('http') ? image : `${process.env.BASE_URL}/uploads/${image}`
-    );
+    // Ensure full URLs for images without duplicate '/uploads/'
+    const fullUrlImages = images.map(image => {
+      if (image.startsWith('http')) {
+        return image;
+      } else {
+        // Remove any leading '/' from the image path
+        const cleanImagePath = image.replace(/^\/+/, '');
+        return `${process.env.BASE_URL}/uploads/${cleanImagePath}`;
+      }
+    });
 
     const product = new Product({
       name,
