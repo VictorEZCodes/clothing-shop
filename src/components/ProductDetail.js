@@ -37,6 +37,10 @@ const ProductDetail = () => {
     }
   };
 
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
+
   const addToCart = () => {
     dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } });
     setTimeout(() => {
@@ -85,7 +89,7 @@ const ProductDetail = () => {
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-24 object-cover rounded-md cursor-pointer"
-                      onClick={() => setMainImage(image)}
+                      onClick={() => handleImageClick(image)}
                     />
                   ))}
                 </div>

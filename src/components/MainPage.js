@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, User } from 'lucide-react';
+import { ShoppingCart, Menu, User, X } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,15 +9,15 @@ import 'react-toastify/dist/ReactToastify.css';
 const MainPage = ({ children }) => {
   const { state } = useCart();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartItemCount = state.items.reduce((total, item) => total + item.quantity, 0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
   }, []);
-
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -26,12 +26,15 @@ const MainPage = ({ children }) => {
     navigate('/');
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       {/* Navigation */}
-      <nav className="bg-white shadow-lg">
+      <nav className="bg-white shadow-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between">
             <div className="flex space-x-7">
@@ -74,73 +77,104 @@ const MainPage = ({ children }) => {
               </Link>
             </div>
             <div className="md:hidden flex items-center">
-              <button className="outline-none mobile-menu-button">
-                <Menu className="w-6 h-6 text-gray-500 hover:text-green-500" />
+              <button onClick={toggleMobileMenu} className="outline-none mobile-menu-button">
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6 text-gray-500 hover:text-green-500" />
+                ) : (
+                  <Menu className="w-6 h-6 text-gray-500 hover:text-green-500" />
+                )}
               </button>
             </div>
           </div>
         </div>
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <Link to="/" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Home</Link>
+            <Link to="/products" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Shop</Link>
+            <Link to="/about" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">About</Link>
+            <Link to="/contact" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Contact</Link>
+            {isLoggedIn ? (
+              <>
+                <Link to="/profile" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Profile</Link>
+                <button onClick={handleLogout} className="block w-full text-left py-2 px-4 text-sm hover:bg-red-500 hover:text-white transition duration-300">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Log In</Link>
+                <Link to="/signup" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">Sign Up</Link>
+              </>
+            )}
+            <Link to="/cart" className="block py-2 px-4 text-sm hover:bg-green-500 hover:text-white transition duration-300">
+              Cart {cartItemCount > 0 && `(${cartItemCount})`}
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
-        {location.pathname === '/' ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center flex flex-col items-center justify-center min-h-[calc(100vh-64px)]"
-          >
-            <motion.h1
-              className="text-4xl font-bold text-gray-800 mb-4"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              Welcome to FashionHub
-            </motion.h1>
-            <motion.p
-              className="text-xl text-gray-600 mb-8"
+      {/* <main className="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8"> */}
+      <main className="flex-grow">
+        <div className="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
+
+          {location.pathname === '/' ? (
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={{ duration: 0.5 }}
+              className="text-center flex flex-col items-center justify-center min-h-[calc(100vh-64px)]"
             >
-              Discover the latest trends in fashion
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              <Link
-                to="/products"
-                className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition duration-300"
+              <motion.h1
+                className="text-4xl font-bold text-gray-800 mb-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
               >
-                Shop Now
-              </Link>
-            </motion.div>
-            <motion.div
-              className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-            >
-              {['Latest Styles', 'Quality Materials', 'Fast Delivery'].map((feature, index) => (
-                <motion.div
-                  key={feature}
-                  className="bg-white p-6 rounded-lg shadow-md"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
+                Welcome to FashionHub
+              </motion.h1>
+              <motion.p
+                className="text-xl text-gray-600 mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                Discover the latest trends in fashion
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <Link
+                  to="/products"
+                  className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition duration-300"
                 >
-                  <h3 className="text-lg font-semibold mb-2">{feature}</h3>
-                  <p className="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </motion.div>
-              ))}
+                  Shop Now
+                </Link>
+              </motion.div>
+              <motion.div
+                className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                {['Latest Styles', 'Quality Materials', 'Fast Delivery'].map((feature, index) => (
+                  <motion.div
+                    key={feature}
+                    className="bg-white p-6 rounded-lg shadow-md"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <h3 className="text-lg font-semibold mb-2">{feature}</h3>
+                    <p className="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
-        ) : (
-          children
-        )}
+          ) : (
+            children
+          )}
+        </div>
       </main>
     </div>
   );
