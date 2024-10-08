@@ -235,7 +235,10 @@ app.post('/api/products', verifyToken, async (req, res) => {
     );
 
     const product = new Product({
-      ...req.body,
+      name,
+      description,
+      price,
+      category,
       images: fullUrlImages
     });
 

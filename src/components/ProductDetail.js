@@ -65,18 +65,10 @@ const ProductDetail = () => {
             <div className="flex flex-col">
               <div className="w-full aspect-w-1 aspect-h-1 mb-4">
                 <img
-                  src={Array.isArray(product.images) && product.images.length > 0
-                    ? product.images[0].startsWith('http')
-                      ? product.images[0]
-                      : `${API_URL}${product.images[0]}`
-                    : ''}
+                  src={Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''}
                   alt={product.name}
                   className="w-full h-full object-center object-cover sm:rounded-lg cursor-pointer"
-                  onClick={() => setSelectedImage(Array.isArray(product.images) && product.images.length > 0
-                    ? product.images[0].startsWith('http')
-                      ? product.images[0]
-                      : `${API_URL}${product.images[0]}`
-                    : '')}
+                  onClick={() => setSelectedImage(product.images[0])}
                 />
               </div>
               {Array.isArray(product.images) && product.images.length > 1 && (
@@ -84,10 +76,10 @@ const ProductDetail = () => {
                   {product.images.slice(1).map((image, index) => (
                     <img
                       key={index}
-                      src={image.startsWith('http') ? image : `${API_URL}${image}`}
+                      src={image}
                       alt={`${product.name} ${index + 2}`}
                       className="w-full h-24 object-cover rounded-md cursor-pointer"
-                      onClick={() => setSelectedImage(image.startsWith('http') ? image : `${API_URL}${image}`)}
+                      onClick={() => setSelectedImage(image)}
                     />
                   ))}
                 </div>
