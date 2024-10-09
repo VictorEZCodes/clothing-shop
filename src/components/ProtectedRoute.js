@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, adminOnly = false }) => {
   const isAuthenticated = !!localStorage.getItem('token');
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (!isAdmin) {
+  if (adminOnly && !isAdmin) {
     return <Navigate to="/" replace />;
   }
 

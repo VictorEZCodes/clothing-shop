@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CartSummary = () => {
   const { state, dispatch } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuthenticated = !!localStorage.getItem('token');
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const removeFromCart = (item) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: item });

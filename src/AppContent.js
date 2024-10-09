@@ -34,7 +34,7 @@ function AppContent() {
           <Route
             path="/admin"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute adminRequired={true}>
                 <AdminPage />
               </ProtectedRoute>
             }
@@ -45,8 +45,22 @@ function AppContent() {
           <Route path="/products" element={<ProductListing />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/cart" element={<CartSummary proceedToCheckout={proceedToCheckout} />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartSummary proceedToCheckout={proceedToCheckout} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
         </Routes>

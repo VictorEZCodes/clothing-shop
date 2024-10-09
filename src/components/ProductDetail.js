@@ -42,9 +42,9 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
-    dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } });
-    setTimeout(() => {
-      toast.success(`${quantity} ${quantity > 1 ? 'items' : 'item'} added to cart!`, {
+    const isAuthenticated = !!localStorage.getItem('token');
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to your cart', {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -52,7 +52,17 @@ const ProductDetail = () => {
         pauseOnHover: true,
         draggable: true,
       });
-    }, 0);
+      return;
+    }
+    dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } });
+    toast.success(`${quantity} ${quantity > 1 ? 'items' : 'item'} added to cart!`, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   };
 
   const handleQuantityChange = (e) => {

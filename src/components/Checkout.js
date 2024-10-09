@@ -20,6 +20,14 @@ const Checkout = () => {
   const [exchangeRate, setExchangeRate] = useState(null);
 
   useEffect(() => {
+    const isAuthenticated = !!localStorage.getItem('token');
+    if (!isAuthenticated) {
+      toast.error('Please log in to proceed with checkout');
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     fetchUserEmail();
     fetchExchangeRate();
 
